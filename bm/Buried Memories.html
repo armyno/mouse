@@ -1,0 +1,78 @@
+<script src="https://cdn.jsdelivr.net/gh/armyno/tinhoc@main/easeljs-0.8.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/armyno/tinhoc@main/tweenjs-0.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/armyno/tinhoc@main/movieclip-0.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/armyno/tinhoc@main/preloadjs-0.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/armyno/tinhoc@main/soundjs-0.6.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/armyno/tinhoc@main/BuriedMemories-bt3.js"></script>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+       #canvas {width: 100%;height: 100%;margin: 0;padding: 0;}
+    </style>
+<script>
+var canvas, stage, exportRoot, ratio;
+
+function init() {
+
+	images = images||{};
+  var ratio_w = window.innerWidth/500;
+  var ratio_h = window.innerHeight/336;
+  ratio = Math.min(ratio_w, ratio_h);
+  ratio = 1.5;
+	
+  var body = document.getElementById("gameholder");
+  gameholder.innerHTML = "<canvas id='canvas' width='" + String(Math.round(500 * ratio))+ "' height='" + String(Math.round(336 * ratio)) + "'style='background:var(--notifB);'></canvas>";
+
+	var manifest = [
+		{src:"https://cdn.jsdelivr.net/gh/armyno/mouse@main/bm/images/image77.png", id:"image77"},
+		{src:"https://cdn.jsdelivr.net/gh/armyno/mouse@main/bm/sounds/sound1swish.mp3", id:"sound1swish"},
+		{src:"https://cdn.jsdelivr.net/gh/armyno/mouse@main/bm/sounds/sound14.mp3", id:"sound14"},
+		{src:"https://cdn.jsdelivr.net/gh/armyno/mouse@main/bm/sounds/sound37.mp3", id:"sound37"},
+		{src:"https://cdn.jsdelivr.net/gh/armyno/mouse@main/bm/sounds/sound39.mp3", id:"sound39"},
+		{src:"https://cdn.jsdelivr.net/gh/armyno/mouse@main/bm/sounds/sound48.mp3", id:"sound48"},
+		{src:"https://cdn.jsdelivr.net/gh/armyno/mouse@main/bm/sounds/sound72.mp3", id:"sound72"},
+		{src:"https://cdn.jsdelivr.net/gh/armyno/mouse@main/bm/sounds/sound76.mp3", id:"sound76"}
+	];
+
+	var loader = new createjs.LoadQueue(false);
+	loader.installPlugin(createjs.Sound);
+	loader.addEventListener("fileload", handleFileLoad);
+	loader.addEventListener("complete", handleComplete);
+	loader.loadManifest(manifest);
+}
+
+function handleFileLoad(evt) {
+	if (evt.item.type == "image") { images[evt.item.id] = evt.result; }
+}
+
+function handleComplete() {
+  canvas = document.getElementById("canvas");
+	exportRoot = new lib.BuriedMemories();
+	stage = new createjs.Stage(canvas);
+	exportRoot.setTransform(0, 0, ratio, ratio);
+	stage.addChild(exportRoot);
+	stage.update();
+  stage.enableMouseOver();
+	createjs.Ticker.setFPS(24);
+	createjs.Ticker.addEventListener("tick", stage);
+}
+
+function playSound(id, loop) {
+	return createjs.Sound.play(id, createjs.Sound.INTERRUPT_EARLY, 0, 0, loop);
+}
+
+function resizeGame() {
+  var ratio_w = window.innerWidth/500;
+  var ratio_h = window.innerHeight/336;
+  ratio = Math.min(ratio_w, ratio_h);
+  ratio = 1.5;
+  canvas.width = Math.round(500 * ratio);
+  canvas.height = Math.round(336 * ratio);    
+  exportRoot.setTransform(0, 0, ratio, ratio);  
+  stage.update()  
+}
+
+</script>
+
+<body bgcolor="#000000" onload="init();" onresize="resizeGame();" />
+<div align="center">
+    <div id="gameholder"></div>
